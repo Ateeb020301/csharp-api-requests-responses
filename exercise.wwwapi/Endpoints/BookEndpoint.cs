@@ -61,5 +61,27 @@ namespace exercise.wwwapi.Endpoints
                 return TypedResults.Problem(ex.Message);
             }
         }
+
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public static async Task<IResult> UpdateBook(IRepository repository, int id, Book model)
+        {
+            try
+            {
+                var target = repository.GetBook(id);
+                if (target == null) return Results.NotFound("Product not found");
+                if (model.Title != null) target.Title = model.Title;
+                if (model.Author != null) target.Author = model.Author;
+                if (model.Genre != null) target.Genre = model.Genre;
+                if (model.NumberOfPages != null) target.NumberOfPages = model.NumberOfPages;
+                await repository.UpdateBook(target);
+                return Results.Ok(target);
+            }
+            catch (Exception ex)
+            {
+                return TypedResults.Problem(ex.Message);
+            }
+        }
     }
 }

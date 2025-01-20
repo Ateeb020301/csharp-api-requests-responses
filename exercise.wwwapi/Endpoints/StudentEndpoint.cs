@@ -14,6 +14,7 @@ namespace exercise.wwwapi.Endpoints
             pets.MapGet("/get{FirstName}", GetStudent);
             pets.MapPost("/add", AddStudent);
             pets.MapDelete("/delete{Firstname}", DeleteStudent);
+            pets.MapPut("/put{Firstname}", UpdateStudent);
         }
 
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -53,6 +54,26 @@ namespace exercise.wwwapi.Endpoints
                 var model = repository.GetStudent(FirstName);
                 if (repository.Delete(FirstName)) return Results.Ok(new { When = DateTime.Now, Status = "Deleted", FirstName = model.FirstName, LastName = model.LastName });
                 return TypedResults.NotFound();
+            }
+            catch (Exception ex)
+            {
+                return TypedResults.Problem(ex.Message);
+            }
+        }
+
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public static async Task<IResult> UpdateStudent(IRepository repository, string FirstName, Student model)
+        {
+            try
+            {
+                var target = repository.GetStudent(FirstName);
+                if (target == null) return Results.NotFound("Student not found");
+                if (model.FirstName != null) target.FirstName = model.FirstName;
+                if (model.LastName != null) target.LastName = model.LastName;
+                await repository.UpdateStudent(target);
+                return Results.Ok(target);
             }
             catch (Exception ex)
             {

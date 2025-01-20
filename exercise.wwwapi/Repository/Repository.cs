@@ -30,6 +30,11 @@ namespace exercise.wwwapi.Repository
         {
             return StudentCollection.Students;
         }
+        public async Task<Student> UpdateStudent(Student entity)
+        {
+            StudentCollection.Update(entity);
+            return entity;
+        }
         #endregion
 
 
@@ -59,6 +64,11 @@ namespace exercise.wwwapi.Repository
         {
             return LanguageCollection.Remove(FirstName);
         }
+        public async Task<Language> UpdatLanguage(Language entity)
+        {
+            LanguageCollection.Update(entity);
+            return entity;
+        }
         #endregion
 
         #region Book
@@ -80,6 +90,12 @@ namespace exercise.wwwapi.Repository
         public Book AddBook(Book entity)
         {
             return BookCollection.Add(entity);
+        }
+
+        public async Task<Book> UpdateBook(Book entity)
+        {
+           BookCollection.Update(entity);
+           return entity;
         }
 
         #endregion
